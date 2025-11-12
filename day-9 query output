@@ -1,0 +1,4 @@
+"service","patient_count","avg_length_of_stay"
+"surgery","254","7.87"
+"ICU","241","7.61"
+"emergency","263","7.16"
