@@ -1,0 +1,5 @@
+"service","total_patients","avg_satisfaction","satisfaction_category"
+"general_medicine","242","78.57","Good"
+"surgery","254","80.31","Good"
+"ICU","241","79.92","Good"
+"emergency","263","79.55","Good"
