@@ -1,0 +1,155 @@
+The Great Pizza Analytics Challenge : 
+
+Questions to solve - 
+Phase 1 : Foundation & Inspection 
+
+1. Install IDC_Pizza.dump as IDC_Pizza server
+Downloaded IDC_pizza.dump file as i am using postgresql 
+How to import dump file 
+Open pgadmin -> create new database -> Right click on data base ->
+Select Restore ->Select the downloaded dump file 
+
+2. List all unique pizza categories (DISTINCT).
+Select Distinct Category from Pizza_types;
+
+3. Display pizza_type_id, name, and ingredients, replacing NULL ingredients with "Missing Data".
+Show first 5 rows.
+Select 
+   pizza_type_id, 
+   name, 
+Coalesce(ingredients, 'Missing Data') as ingredients
+from pizza_types
+Limit 5;
+
+4. Check for pizzas missing a price (IS NULL).
+Select 
+   Pizza_id, 
+   pizza_type_id
+from pizzas
+where price IS NULL;
+
+Phase 2 : Filtering & Exploration
+
+5. Orders placed on '2015-01-01'
+Select
+   order_id,
+   date
+from orders 
+where date = '2015-01-01';
+
+6. List pizzas with price descending.
+Select 
+   Pizza_id, 
+   pizza_type_id,
+   price
+from pizzas
+order by price DESC;
+
+7. Pizzas sold in sizes 'L' or 'XL'
+Select 
+   pizza_id,
+   pizza_type_id,
+   size
+from pizzas
+where size = 'L' or size = 'XL';
+
+8. Pizzas priced between $15.00 and $17.00.
+Select 
+    Pizza_id,
+	pizza_type_id,
+	price
+from pizzas
+where price BETWEEN 15.00 and 17.00;
+
+9. Pizzas with "Chicken" in the name.
+Select 
+   Pizza_type_id,
+   name
+from pizza_types
+where name Like '%Chicken%'
+
+10. Orders on '2015-02-15' or placed after 8 PM.
+Select 
+  order_id,
+  date,
+  time
+from orders
+where date = '2015-02-15' and time > '20:00:00';
+
+Phase 3: Sales Performance
+11. Total quantity of pizzas sold 
+Select
+   pizza_id,
+   sum(quantity) as Total_quantity_of_pizzas
+from order_details
+Group by pizza_id;
+
+12. Average pizza price 
+Select 
+  round(Avg(price),2) as avg_price
+from pizzas;
+
+13. Total order value per order
+Select 
+   od.order_id,
+   sum(od.quantity * p.price) as total_order_value
+from order_details od
+Join pizzas p
+on od.pizza_id = p.pizza_id
+Group by od.order_id
+order by od.order_id;
+
+14. Total quantity sold per pizza category 
+Select 
+    pt.category,
+    Sum(od.quantity) as total_quantity_sold
+From order_details od
+Join pizzas p 
+    On od.pizza_id = p.pizza_id
+Join pizza_types pt
+    On p.pizza_type_id = pt.pizza_type_id
+Group by pt.category
+Order by total_quantity_sold DESC;
+
+15. Categories with more than 5,000 pizzas sold 
+Select 
+    pt.category,
+    Sum(od.quantity) as total_quantity_sold
+From order_details od
+Join pizzas p 
+    On od.pizza_id = p.pizza_id
+Join pizza_types pt
+    On p.pizza_type_id = pt.pizza_type_id
+Group by pt.category
+having Sum(od.quantity) < 5000
+Order by total_quantity_sold DESC
+
+-- No Category has sold more than 5000 pizzas ---
+
+16. Pizzas never ordered
+Select
+    p.pizza_id,
+    p.pizza_type_id,
+    p.size,
+    p.price
+From pizzas p
+Left Join order_details od
+    On p.pizza_id = od.pizza_id
+Where od.pizza_id IS NULL;
+
+17. Price differences between different sizes of the same pizza 
+Select 
+    p1.pizza_type_id,
+    p1.size AS size_1,
+    p1.price AS price_1,
+    p2.size AS size_2,
+    p2.price AS price_2,
+    p2.price - p1.price AS price_difference
+From pizzas p1
+Join pizzas p2
+    On p1.pizza_type_id = p2.pizza_type_id   -- same pizza type
+   And p1.size <> p2.size                    -- different sizes
+Order by  
+    p1.pizza_type_id,
+    size_1,
+    size_2;
