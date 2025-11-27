@@ -1,0 +1,5 @@
+"service","total_admissions","total_refusals","avg_satisfaction","total_staff","avg_weeks_present","avg_age","total_patients","performance_score"
+"general_medicine","2332","1938","81.23","28","0.59","46.19","242","2494.46"
+"surgery","1686","555","79.27","25","0.60","45.59","254","1844.54"
+"emergency","1185","5008","77.88","39","0.60","45.33","263","1340.76"
+"ICU","648","141","81.62","34","0.60","44.22","241","811.24"
